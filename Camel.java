@@ -64,6 +64,15 @@ public class Camel {
     public void move(Camel camel, Tile[] board){
         int i = camel.position + camel.roll();
         int len = board[i].camelStack.size();
+        
+        if (board[i].hasModifier){
+            if(board[i].getModifier() == true) {
+                i = camel.position + camel.roll() + 1;
+            } else if (board[i].getModifier() == false) {
+                i = camel.position + camel.roll() - 1;
+            }
+        }
+        
         if (board[i].camelStack.isEmpty()){
             if(board[camel.position].camelStack.contains(camel)){
                 board[camel.position].camelStack.delete(camel);
