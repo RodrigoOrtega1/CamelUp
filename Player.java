@@ -183,13 +183,16 @@ public class Player {
         int i = 0;
         if(!board[i].hasModifier || !board[i - 1].hasModifier || !board[i + 1].hasModifier)
             this.hasModifier = false;   
-            this.modifier = modifier; 
+            board[i].setModifier(modifier);
             board[i].hasModifier = true;     
     }
     
     /**
      * Gira el dado de un camello aleatorio que no se haya movido
      */
-    public void rollDie(){}
+    public void rollDie(Camel[] camelArr){
+        int i = 0;
+        camelArr[i].move();
+    }
 
 }
