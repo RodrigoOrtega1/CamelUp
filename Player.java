@@ -1,9 +1,13 @@
+import Extras.SimpleLinkedList;
+import Extras.Stack;
+
 /**
  * Clase que modela un jugador de CamelUp
  * @author Rodrigo Ortega 318036104
  * @version 1.0 Oct 6 2022
  * @since ED 2023-1
  */
+
 public class Player {
     
     /**
@@ -190,9 +194,9 @@ public class Player {
     /**
      * Gira el dado de un camello aleatorio que no se haya movido
      */
-    public void rollDie(Camel[] camelArr){
+    public void rollDie(Camel[] camelArr, Tile[] board){
         int i = 0;
-        camelArr[i].move();
+        camelArr[i].move(camelArr[i], board);
     }
 
 }

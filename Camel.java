@@ -1,4 +1,12 @@
 import java.util.Random;
+import Extras.Stack;
+
+/**
+ * Clase que modela un camello de CamelUp
+ * @author Rodrigo Ortega 318036104
+ * @version 1.0 Oct 6 2022
+ * @since ED 2023-1
+ */
 
 public class Camel {
     /**
@@ -29,18 +37,41 @@ public class Camel {
         this.identifier = identifier;
     }
     
+    /**
+     * Cambia el atributo posicion
+     * @param position nuevo valor de posicion
+     */
+    public void setPosition(int position){
+        this.position = position;
+    }
+
+    /**
+     * Clase interna que representa una carta de apuesta
+     */
     public class betCard{
         int value;
         public betCard(int value){
             this.value = value;
         }
+
+        public String toString(){
+            String str = "" + this.value;
+            return str;
+        }
     }
 
-    public int roll(){
+    /**
+     * Gira el dado del camello
+     * @return el numero que tiró el dado
+     */
+    private int roll(){
         int rndNum = new Random().nextInt(die.length);
         return die[rndNum];
     }
 
+    /**
+     * Llena la pila del caballo con cartas de apuestas
+     */
     public void fillCamelStack(){
         betCard card1 = new betCard(5);
         betCard card2 = new betCard(2);
@@ -50,17 +81,16 @@ public class Camel {
         camelStack.push(card2);
         camelStack.push(card1);
     }
-    
-    public void move(){}
 
     public String toString(){
         return this.identifier;
     }
 
-    public void setPosition(int position){
-        this.position = position;
-    }
-
+    /**
+     * Mueve el camello
+     * @param camel el camello a mover
+     * @param board el tablero en el que se mueve el camello
+     */
     public void move(Camel camel, Tile[] board){
         int i = camel.position + camel.roll();
         int len = board[i].camelStack.size();
@@ -70,6 +100,7 @@ public class Camel {
                 i = camel.position + camel.roll() + 1;
             } else if (board[i].getModifier() == false) {
                 i = camel.position + camel.roll() - 1;
+                //Poner la condicion de cuando retroceden por un modificador
             }
         }
         
