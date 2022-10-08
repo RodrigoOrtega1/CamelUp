@@ -36,6 +36,10 @@ public class Tile {
     public void setModifier(boolean modifier) {
         this.modifier = modifier;
     }
+
+    public String toString(){
+        return camelStack.toString();
+    }
     
 
 }

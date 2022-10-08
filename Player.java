@@ -81,7 +81,11 @@ public class Player {
          */
         public String getOwner(){
             return this.owner;
-        }        
+        }
+
+        public String toString(){
+            return this.camel;
+        }
     }
 
     /**
@@ -136,11 +140,11 @@ public class Player {
      * Genera cartas de camello y las coloca en una lista 
      */
     public void fillCamelCardList(){
-        CamelCard camelCard1 = new CamelCard("Camel 0");
-        CamelCard camelCard2 = new CamelCard("Camel 1");
-        CamelCard camelCard3 = new CamelCard("Camel 2");
-        CamelCard camelCard4 = new CamelCard("Camel 3");
-        CamelCard camelCard5 = new CamelCard("Camel 4");
+        CamelCard camelCard1 = new CamelCard("Red");
+        CamelCard camelCard2 = new CamelCard("Green");
+        CamelCard camelCard3 = new CamelCard("Yellow");
+        CamelCard camelCard4 = new CamelCard("Purple");
+        CamelCard camelCard5 = new CamelCard("Blue");
         camelCardList.add(0, camelCard1);
         camelCardList.add(0, camelCard2);
         camelCardList.add(0, camelCard3);
@@ -159,23 +163,14 @@ public class Player {
     public void betWinRound(Camel camel){
         betCardList.add(0, camel.camelStack.pop());
     }
-
-    /**
-     * Coloca una carta de camello en la pila de camellos ganadores
-     * @param stack pila de camellos ganadores
-     */
-    public void betWin(Stack<CamelCard> stack){
-        stack.push(camelCardList.get(0));
-        camelCardList.remove(0);
-    }
     
     /**
-     * Coloca una carta de camello en la pila de camellos perdedores
-     * @param stack pila de camellos perdedores
+     * Coloca una carta de camello en la pila de camellos ganadores o perdedores
+     * @param stack pila de camellos ganadores o perdedores
      */
-    public void betLose(Stack<CamelCard> stack){
-        stack.push(camelCardList.get(0));
-        camelCardList.remove(0);
+    public void bet(Stack<CamelCard> stack, int i){
+        stack.push(camelCardList.get(i));
+        camelCardList.remove(i);
     }
     
     /**
@@ -183,8 +178,7 @@ public class Player {
      * @param board el tablero
      * @param modifier true si quieres que avance, false si quieres que retroceda
      */
-    public void placeMod(Tile[] board, boolean modifier){
-        int i = 0;
+    public void placeMod(Tile[] board, boolean modifier, int i){
         if(!board[i].hasModifier || !board[i - 1].hasModifier || !board[i + 1].hasModifier)
             this.hasModifier = false;   
             board[i].setModifier(modifier);
@@ -194,9 +188,25 @@ public class Player {
     /**
      * Gira el dado de un camello aleatorio que no se haya movido
      */
-    public void rollDie(Camel[] camelArr, Tile[] board){
-        int i = 0;
-        camelArr[i].move(camelArr[i], board);
+    public void rollDie(SimpleLinkedList<Camel> camelList, Tile[] board, int i){
+        camelList.get(i).move(camelList.get(i), board);
+        setMoney(getMoney() + 1);
+    }
+
+    public void grade(){
+        for(int i = 0; i < betCardList.size(); i++){
+            if (betCardList.isEmpty()){
+                setMoney(this.money + 0);
+            } else {
+                if(betCardList.get(i).camelPlace == 1){
+                    setMoney(this.money + betCardList.get(i).value);
+                } else if (betCardList.get(i).camelPlace == 2){
+                    setMoney(this.money + 1);
+                } else {
+                    setMoney(this.money - 1);
+                }
+            }
+        }
     }
 
 }

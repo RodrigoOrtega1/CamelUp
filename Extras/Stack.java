@@ -1,5 +1,4 @@
 package Extras;
-import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -17,10 +16,6 @@ public class Stack<T>{
     private class Node<T> {
         T data;
         Node<T> previous;
-    
-        public Node(T data){
-            this.data = data;
-        }
         
         public Node(T data, Node<T> previous){
             this.data = data;

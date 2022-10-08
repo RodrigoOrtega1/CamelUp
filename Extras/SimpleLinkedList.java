@@ -273,15 +273,17 @@ public class SimpleLinkedList<T>{
     public String toString(){
         Nodo iterador = cabeza;
         String cadena= "";
-        while(iterador!=null){
-            cadena= cadena+ iterador.elemento;
+        while(iterador != null){
+            cadena = cadena + iterador.elemento;
+            if (iterador.siguiente != null){
+                cadena += ", ";
+            }
             iterador = iterador.siguiente;
         }
         return cadena;
-
     }
 
-    public Iterator iterador(){
+    public Iterator<T> iterador(){
         return new IteradorListaSimple(this.cabeza);
     }
 

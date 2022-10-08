@@ -15,7 +15,7 @@ public class Camel {
     String identifier;
 
     /**
-     * La posicion actual del camello
+     * La casilla actual del camello en el tablero
      */
     int position = 0;
     
@@ -24,6 +24,12 @@ public class Camel {
      */
     Stack<betCard> camelStack = new Stack<>();
     
+    /**
+     * Lugar en el que va el camello
+     */
+    int place = 0;
+
+
     /**
      * El dado del camello
      */
@@ -45,15 +51,19 @@ public class Camel {
         this.position = position;
     }
 
+    public void setPlace(int place){
+        this.place = place;
+    }
+
     /**
      * Clase interna que representa una carta de apuesta
      */
     public class betCard{
         int value;
+        int camelPlace = place;
         public betCard(int value){
             this.value = value;
         }
-
         public String toString(){
             String str = "" + this.value;
             return str;
@@ -123,4 +133,5 @@ public class Camel {
             camel.setPosition(i);
         }
     }
+
 }
