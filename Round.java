@@ -29,7 +29,7 @@ public class Round {
                 camelPos.add(camelPos.size(), board[i].camelStack.get(j));
             }
         }
-        System.out.println(camelPos);
+        
         for(int i = 0; i < 5; i++){
             switch(i){
                 case 0:
@@ -49,6 +49,18 @@ public class Round {
                     break;
             }
         }
+
+        for(int i = 0; i < camelPos.size(); i++){
+            for(int j = 0; j < playerList.size(); j++){
+                for(int k = 0; k < playerList.get(j).betCardList.size(); k++){
+                    if(camelPos.get(i).identifier == playerList.get(j).betCardList.get(k).camelName){
+                        playerList.get(j).betCardList.get(k).setPlace(camelPos.get(i).place);
+                    }
+                }    
+            }
+        }
+
+        System.out.println("Posiciones temporales de la ronda (atras para adelante): " + camelPos);
     }
 
     /**
@@ -209,7 +221,9 @@ public class Round {
                 playerList.get(currentPlayer).rollDie(camelList, board, randomInt);
                 alreadyMoved.add(alreadyMoved.size(), camelList.get(randomInt));
                 camelList.remove(randomInt);
-                history.push("El jugador " + playerList.get(currentPlayer).getName() + " movio a " + camelList.get(randomInt).identifier);
+                System.out.println("Has movido a: " +  alreadyMoved.get(alreadyMoved.size() - 1).identifier);
+                System.out.println("Se han movido los siguientes camellos esta ronda: " + alreadyMoved);
+                history.push("El jugador " + playerList.get(currentPlayer).getName() + " movio a " + alreadyMoved.get(alreadyMoved.size() - 1).identifier);
                 isTurnOver = true;
                 break;
             case 0:
@@ -223,11 +237,20 @@ public class Round {
     }
 
     public void round(Scanner scanner){
-        int currentPlayer = 0;
-        while (currentPlayer < playerList.size()){
-            turn(currentPlayer, scanner);
-            currentPlayer++;
+        
+        while(isRoundOver != true){
+            int currentPlayer = 0;
+            while (currentPlayer < playerList.size()){
+                if(camelList.isEmpty()){
+                    isRoundOver = true;
+                    break;
+                }
+                turn(currentPlayer, scanner);
+                currentPlayer++;
+            }
         }
+
+        System.out.println("\n---- Final de la ronda ----\n");
 
         placeCamel(board);
 
