@@ -229,12 +229,12 @@ public class Round {
             currentPlayer++;
         }
 
+        placeCamel(board);
+
         for(int i = 0; i < playerList.size(); i++){
             playerList.get(i).grade();
             history.push("El jugador " + playerList.get(i).getName() + " tiene " + playerList.get(i).getMoney() + " monedas");
         }
-
-        placeCamel(board);
 
         playerList.add(playerList.size(), playerList.get(0));
         playerList.remove(0);
