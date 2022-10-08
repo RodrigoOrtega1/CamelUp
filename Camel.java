@@ -102,35 +102,36 @@ public class Camel {
      * @param board el tablero en el que se mueve el camello
      */
     public void move(Camel camel, Tile[] board){
-        int i = camel.position + camel.roll();
-        int len = board[i].camelStack.size();
+        int destination = camel.position + camel.roll();
+        int len = board[destination].camelStack.size();
         
-        if (board[i].hasModifier){
-            if(board[i].getModifier() == true) {
-                i = camel.position + camel.roll() + 1;
-            } else if (board[i].getModifier() == false) {
-                i = camel.position + camel.roll() - 1;
+        if (board[destination].hasModifier){
+            if(board[destination].getModifier() == true) {
+                destination = camel.position + camel.roll() + 1;
+            } else if (board[destination].getModifier() == false) {
+                destination = camel.position + camel.roll() - 1;
                 //Poner la condicion de cuando retroceden por un modificador
             }
         }
         
-        if (board[i].camelStack.isEmpty()){
+        if (board[destination].camelStack.isEmpty()){
+            board[destination].camelStack.add(0, camel);
             if(board[camel.position].camelStack.contains(camel)){
                 board[camel.position].camelStack.delete(camel);
             }
-            board[i].camelStack.add(0, camel);
-            camel.setPosition(i);
+            camel.setPosition(destination);
         } else if (board[camel.position].camelStack.size() > 1){
             for(int j = board[camel.position].camelStack.indexOf(camel); j < board[camel.position].camelStack.size(); j++){
-                board[i].camelStack.add(len, board[camel.position].camelStack.get(j));
-                board[i].camelStack.get(j).setPosition(i);
+                board[destination].camelStack.add(len, board[camel.position].camelStack.get(j));
+                board[destination].camelStack.get(j).setPosition(destination);
+                board[camel.position].camelStack.delete(board[camel.position].camelStack.get(j));
             }
         } else {
+            board[destination].camelStack.add(len, camel);
             if(board[camel.position].camelStack.contains(camel)){
                 board[camel.position].camelStack.delete(camel);
             }
-            board[i].camelStack.add(len, camel);
-            camel.setPosition(i);
+            camel.setPosition(destination);
         }
     }
 

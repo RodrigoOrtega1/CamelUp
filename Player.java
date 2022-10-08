@@ -190,7 +190,7 @@ public class Player {
      */
     public void rollDie(SimpleLinkedList<Camel> camelList, Tile[] board, int i){
         camelList.get(i).move(camelList.get(i), board);
-        setMoney(getMoney() + 1);
+        setMoney(this.money + 1);
     }
 
     public void grade(){

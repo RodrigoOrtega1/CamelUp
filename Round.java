@@ -29,7 +29,7 @@ public class Round {
                 camelPos.add(camelPos.size(), board[i].camelStack.get(j));
             }
         }
-        System.out.println(camelPos);
+        
         for(int i = 0; i < 5; i++){
             switch(i){
                 case 0:
@@ -148,6 +148,9 @@ public class Round {
     }
 
     public void turn(int currentPlayer, Scanner scanner){
+        if (camelList.isEmpty()){
+            isTurnOver = true;
+        }
         System.out.println("Turno de: " + playerList.get(currentPlayer).getName());
         System.out.println("Tablero: " + "\n" + Arrays.toString(board));
         System.out.println("-- Perfil:--"  + "\n" +
@@ -158,7 +161,7 @@ public class Round {
                            "--------------------"); 
         
         do{
-            System.out.println("Acciones:\n" +
+        System.out.println("Acciones:\n" +
                            "[1]Apostar por el camello ganador de la ronda\n" + 
                            "[2]Apostar por el camello ganador de la carrera\n" +
                            "[3]Apostar por el camello perdedor de la carrera\n" +
@@ -209,7 +212,9 @@ public class Round {
                 playerList.get(currentPlayer).rollDie(camelList, board, randomInt);
                 alreadyMoved.add(alreadyMoved.size(), camelList.get(randomInt));
                 camelList.remove(randomInt);
-                history.push("El jugador " + playerList.get(currentPlayer).getName() + " movio a " + camelList.get(randomInt).identifier);
+                System.out.println("Has movido a: " +  alreadyMoved.get(alreadyMoved.size() - 1).identifier);
+                System.out.println("Se han movido los siguientes camellos esta ronda: " + alreadyMoved);
+                history.push("El jugador " + playerList.get(currentPlayer).getName() + " movio a " + alreadyMoved.get(alreadyMoved.size() - 1).identifier);
                 isTurnOver = true;
                 break;
             case 0:
@@ -223,19 +228,25 @@ public class Round {
     }
 
     public void round(Scanner scanner){
+
+        //while(isRoundOver != true){}
         int currentPlayer = 0;
         while (currentPlayer < playerList.size()){
+            //if(camelList.isEmpty()){
+            //    isRoundOver = true;
+            //    break;
+            //}
             turn(currentPlayer, scanner);
             currentPlayer++;
         }
 
         placeCamel(board);
-
+        
         for(int i = 0; i < playerList.size(); i++){
             playerList.get(i).grade();
             history.push("El jugador " + playerList.get(i).getName() + " tiene " + playerList.get(i).getMoney() + " monedas");
         }
-
+            
         playerList.add(playerList.size(), playerList.get(0));
         playerList.remove(0);
 
