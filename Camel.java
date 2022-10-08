@@ -61,9 +61,16 @@ public class Camel {
     public class betCard{
         int value;
         int camelPlace = place;
+        String camelName = identifier;
+
         public betCard(int value){
             this.value = value;
         }
+
+        public void setPlace(int place){
+            this.camelPlace = place;
+        }
+
         public String toString(){
             String str = "" + this.value;
             return str;

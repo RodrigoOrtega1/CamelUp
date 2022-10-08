@@ -195,16 +195,13 @@ public class Player {
 
     public void grade(){
         for(int i = 0; i < betCardList.size(); i++){
-            if (betCardList.isEmpty()){
-                setMoney(this.money + 0);
+            System.out.println("El camello esta en: " + betCardList.get(i).camelPlace);
+            if(betCardList.get(i).camelPlace == 1){
+                setMoney(getMoney() + betCardList.get(i).value);
+            } else if (betCardList.get(i).camelPlace == 2){
+                setMoney(getMoney() + 1);
             } else {
-                if(betCardList.get(i).camelPlace == 1){
-                    setMoney(this.money + betCardList.get(i).value);
-                } else if (betCardList.get(i).camelPlace == 2){
-                    setMoney(this.money + 1);
-                } else {
-                    setMoney(this.money - 1);
-                }
+                setMoney(getMoney() - 1);
             }
         }
     }
