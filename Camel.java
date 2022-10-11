@@ -1,5 +1,5 @@
 import java.util.Random;
-import Extras.Stack;
+import Extras.*;
 
 /**
  * Clase que modela un camello de CamelUp
@@ -104,42 +104,73 @@ public class Camel {
     }
 
     /**
-     * Mueve el camello
+     * Mueve al camello
      * @param camel el camello a mover
      * @param board el tablero en el que se mueve el camello
      */
-    public void move(Camel camel, Tile[] board){
-        int destination = camel.position + camel.roll();
+    public void move(Camel camel, Tile[] board, Stack<String> history){
+        int origin = camel.position;
+        int destination = origin + camel.roll();
         int len = board[destination].camelStack.size();
         
-        if (board[destination].hasModifier){
+        
+        if (board[destination].hasModifier()){
+            Player owner = board[destination].modifier.get(0).getOwner();
+            owner.setMoney(owner.getMoney() + 1); //give player a coin
+            history.push(camel.identifier + " cayo en el modificador de " + owner.getName() + " el jugador y recibe +1 moneda");
             if(board[destination].getModifier() == true) {
-                destination = camel.position + camel.roll() + 1;
-            } else if (board[destination].getModifier() == false) {
-                destination = camel.position + camel.roll() - 1;
-                //Poner la condicion de cuando retroceden por un modificador
+                destination = destination + 1;
             }
         }
-        
-        if (board[destination].camelStack.isEmpty()){
-            board[destination].camelStack.add(0, camel);
-            if(board[camel.position].camelStack.contains(camel)){
-                board[camel.position].camelStack.delete(camel);
+
+        if (board[origin].camelStack.size() > 1){
+            SimpleLinkedList<Camel> temp = new SimpleLinkedList<>();
+            for(int i = board[origin].camelStack.indexOf(camel); i < board[origin].camelStack.size(); i++){
+                temp.add(temp.size(), board[origin].camelStack.get(i));
             }
-            camel.setPosition(destination);
-        } else if (board[camel.position].camelStack.size() > 1){
-            for(int j = board[camel.position].camelStack.indexOf(camel); j < board[camel.position].camelStack.size(); j++){
-                board[destination].camelStack.add(len, board[camel.position].camelStack.get(j));
+            if(board[destination].hasModifier()){
+                //owner.setMoney(owner.getMoney() + 1); //give player a coin
+                if(board[destination].getModifier() == false){
+                    SimpleLinkedList<Camel> temp2 = new SimpleLinkedList<>(); // camellos en la casilla anterior
+                    destination = destination - 1;
+                    for(int i = 0; i < board[destination].camelStack.size(); i++){
+                        temp2.add(temp2.size(), board[destination].camelStack.get(i));
+                    }
+                    board[destination].camelStack.clear();
+                    for (int i = 0; i < temp.size(); i++){
+                        board[origin].camelStack.delete(temp.get(i));
+                        if(temp2.contains(temp.get(i))){
+                            temp2.delete(temp.get(i));
+                        }
+                        board[destination].camelStack.add(board[destination].camelStack.size(), temp.get(i));
+                    }
+                    for (int i = 0; i < temp2.size(); i++){
+                        board[destination].camelStack.add(board[destination].camelStack.size(), temp2.get(i));
+                    }
+                }
+            } else {
+                for (int i = 0; i < temp.size(); i++){
+                    board[origin].camelStack.delete(temp.get(i));
+                    board[destination].camelStack.add(board[destination].camelStack.size(), temp.get(i));
+                }
+            }
+            for(int j = 0; j < board[destination].camelStack.size(); j++){
                 board[destination].camelStack.get(j).setPosition(destination);
-                board[camel.position].camelStack.delete(board[camel.position].camelStack.get(j));
             }
         } else {
-            board[destination].camelStack.add(len, camel);
-            if(board[camel.position].camelStack.contains(camel)){
-                board[camel.position].camelStack.delete(camel);
+            if(board[destination].hasModifier()){
+                //owner.setMoney(owner.getMoney() + 1); //give player a coin
+                if(board[destination].getModifier() == false){
+                    destination = destination - 1;
+                    board[origin].camelStack.delete(camel);
+                    board[destination].camelStack.add(0, camel);
+                    camel.setPosition(destination);
+                }
+            } else {
+                board[origin].camelStack.delete(camel);
+                board[destination].camelStack.add(len, camel);
+                camel.setPosition(destination);
             }
-            camel.setPosition(destination);
         }
     }
-
 }
