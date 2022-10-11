@@ -111,6 +111,9 @@ public class Camel {
     public void move(Camel camel, Tile[] board, Stack<String> history){
         int origin = camel.position;
         int destination = origin + camel.roll();
+        if(destination > 15){
+            destination = 15;
+        }
         int len = board[destination].camelStack.size();
         
         
@@ -129,7 +132,6 @@ public class Camel {
                 temp.add(temp.size(), board[origin].camelStack.get(i));
             }
             if(board[destination].hasModifier()){
-                //owner.setMoney(owner.getMoney() + 1); //give player a coin
                 if(board[destination].getModifier() == false){
                     SimpleLinkedList<Camel> temp2 = new SimpleLinkedList<>(); // camellos en la casilla anterior
                     destination = destination - 1;
@@ -159,7 +161,6 @@ public class Camel {
             }
         } else {
             if(board[destination].hasModifier()){
-                //owner.setMoney(owner.getMoney() + 1); //give player a coin
                 if(board[destination].getModifier() == false){
                     destination = destination - 1;
                     board[origin].camelStack.delete(camel);
