@@ -25,11 +25,7 @@ public class Tile {
      * @return true if the tile has a modifier
      */
     public boolean hasModifier(){
-        if(modifier.isEmpty()){
-            return false;
-        } else {
-            return true;
-        }
+        return !modifier.isEmpty();
     }
 
     public boolean getModifier(){
