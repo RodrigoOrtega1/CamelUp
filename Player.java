@@ -20,16 +20,6 @@ public class Player {
      * Dinero del jugador
      */
     private int money;
-    
-    /**
-     * Indica si el jugador posee un modificador
-     */
-    private boolean hasModifier = true;
-
-    /**
-     * Modificador de tablero
-     */
-    public boolean modifier;
 
     /**
      * Lista de las cartas de apuesta que posee el jugador
@@ -40,6 +30,8 @@ public class Player {
      * Lista de las cartas de camello que posee el jugador
      */
     public SimpleLinkedList<CamelCard> camelCardList = new SimpleLinkedList<>();
+
+    public SimpleLinkedList<Modifier> modifierL = new SimpleLinkedList<>();
 
     /**
      * Constructor de un jugador
@@ -88,6 +80,28 @@ public class Player {
         }
     }
 
+    public class Modifier{
+        private boolean value;
+        private Player owner;
+
+        public Modifier(Player owner){
+            this.owner = owner;
+        }
+
+        public Player getOwner(){
+            return owner;
+        }
+        
+        public boolean getValue(){
+            return value;
+        }
+
+        public void setValue(boolean value){
+            this.value = value;
+        }
+
+    }
+
     /**
      * Regresa la cantidad de dinero del Jugador
      * @return la cantidad de dinero del jugador
@@ -119,22 +133,6 @@ public class Player {
     public void setName(String name){
         this.name = name;
     }
-
-    /**
-     * Regresa si el jugador tiene el modificador
-     * @return true si el jugador tiene el modificador
-     */
-    public boolean getHasModifier(){
-        return this.hasModifier;
-    }
-
-    /**
-     * Modifica hasModifier
-     * @param hasModifier nuevo valor de hasModifier
-     */
-    public void setHasModifier(boolean hasModifier){
-        this.hasModifier = hasModifier;
-    }
     
     /**
      * Genera cartas de camello y las coloca en una lista 
@@ -150,6 +148,11 @@ public class Player {
         camelCardList.add(0, camelCard3);
         camelCardList.add(0, camelCard4);
         camelCardList.add(0, camelCard5);
+    }
+
+    public void fillModifier(){
+        Modifier modifier = new Modifier(this);
+        modifierL.add(0, modifier);
     }
     
     public String toString(){
@@ -177,19 +180,28 @@ public class Player {
      * Coloca un modificador en el tablero
      * @param board el tablero
      * @param modifier true si quieres que avance, false si quieres que retroceda
+     * @param i casilla en el tablero
      */
     public void placeMod(Tile[] board, boolean modifier, int i){
-        if(!board[i].hasModifier || !board[i - 1].hasModifier || !board[i + 1].hasModifier)
-            this.hasModifier = false;   
-            board[i].setModifier(modifier);
-            board[i].hasModifier = true;     
+        boolean canPlace = false;
+        while(canPlace == false){
+            if(!board[i].hasModifier() && !board[i - 1].hasModifier() && !board[i + 1].hasModifier() && board[i].camelStack.isEmpty()){
+                modifierL.get(0).setValue(modifier);
+                board[i].modifier.add(0, modifierL.get(0));
+                modifierL.clear();
+                canPlace = true;
+            } else {
+                System.out.println("Casilla invalida, intenta de nuevo");
+                break;
+            }
+        }
     }
     
     /**
      * Gira el dado de un camello aleatorio que no se haya movido
      */
-    public void rollDie(SimpleLinkedList<Camel> camelList, Tile[] board, int i){
-        camelList.get(i).move(camelList.get(i), board);
+    public void rollDie(SimpleLinkedList<Camel> camelList, Tile[] board, int i, Stack<String> history){
+        camelList.get(i).move(camelList.get(i), board, history);
         setMoney(this.money + 1);
     }
 
