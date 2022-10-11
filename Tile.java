@@ -8,37 +8,32 @@ import Extras.SimpleLinkedList;
  */
 
 public class Tile {
-    /**
-     * Indica si la casilla tiene un modificador aplicado
-     */
-     boolean hasModifier = false;
-
-    /**
-     * Indica el sentido del modificador
-     */
-    boolean modifier;
+    
+    SimpleLinkedList<Player.Modifier> modifier = new SimpleLinkedList<>();
 
     /**
      * La "pila" de camellos de la casilla
      */
     SimpleLinkedList<Camel> camelStack = new SimpleLinkedList<>();
     
-    
-    public boolean getHasModifier() {
-        return hasModifier;
-    }
-    public void setHasModifier(boolean hasModifier) {
-        this.hasModifier = hasModifier;
-    }
-    public boolean getModifier() {
-        return modifier;
-    }
-    public void setModifier(boolean modifier) {
-        this.modifier = modifier;
-    }
-
     public String toString(){
         return camelStack.toString();
+    }
+
+    /**
+     * Checks if the tile has a modifier
+     * @return true if the tile has a modifier
+     */
+    public boolean hasModifier(){
+        if(modifier.isEmpty()){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean getModifier(){
+        return modifier.get(0).getValue();
     }
     
 
