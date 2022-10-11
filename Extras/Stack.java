@@ -118,8 +118,8 @@ public class Stack<T>{
     }
 
     /**
-    * Permite visualizar los elementos de un stack
-    */
+     * Permite visualizar los elementos de un stack
+     */
     public void show(){
         Iterator<T> iterator = new StackIterator();
         while(iterator.hasNext()){
