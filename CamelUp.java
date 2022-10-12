@@ -140,6 +140,28 @@ public class CamelUp {
         }
     }
 
+    private void evaluatePlayers(){
+        SimpleLinkedList<Player> winners = new SimpleLinkedList<>();
+        int mostMoney = 0;
+        for (int i = 0; i < players.size(); i++){
+            if(players.get(i).getMoney() > mostMoney){
+                mostMoney =  players.get(i).getMoney();
+            }
+        }
+        for (int i = 0; i < players.size(); i++){
+            if(players.get(i).getMoney() == mostMoney){
+                winners.add(winners.size(), players.get(i));
+            }
+        }
+        if(winners.size() == 1) {
+            System.out.println("El jugador " + winners + " ha ganado la partida con " + winners.get(0).getMoney() + " monedas");
+        } else if (winners.size() > 1){
+            System.out.println("Los jugadores " + winners + " han empatado la partida con " + winners.get(0).getMoney() + " monedas");
+        } else {
+            System.out.println("Nadie gano?");
+        }
+    }
+
     private void evaluateRound(){
         System.out.println("\n----Final de la ronda----");
         displayBoard();
@@ -153,6 +175,76 @@ public class CamelUp {
         
         System.out.println("\n----Historial de ronda----");
         reverseHistory(history);
+    }
+
+    private void evaluateStack(Stack<Player.CamelCard> stack){
+        SimpleLinkedList<Player.CamelCard> temp = new SimpleLinkedList<>();
+        while(!stack.isEmpty()){
+            temp.add(temp.size(), stack.pop());
+        }
+        temp.revert();
+        Camel winner = new Camel(null);
+        for(int i = 0; i < camelsAlwaysFull.size(); i++){
+            if(camelsAlwaysFull.get(i).place == 1){
+                winner = camelsAlwaysFull.get(i);
+            }
+        } 
+        int playerGuessedRight = 0;
+        for(int i = 0; i < temp.size(); i++){
+            if(temp.get(i).camel.equals(winner.identifier)){
+                switch(playerGuessedRight){
+                    case 0:
+                        temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() + 8);
+                        System.out.println(temp.get(i).getOwner().getName() + " fue el primero en apostar por " + winner.identifier + " y ha ganado 8 monedas");
+                        playerGuessedRight++;
+                        break;
+                    case 1:
+                        temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() + 5);
+                        System.out.println(temp.get(i).getOwner().getName() + " fue el segundo en apostar por " + winner.identifier + " y ha ganado 5 monedas");
+                        playerGuessedRight++;
+                        break;
+                    case 2:
+                        temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() + 3);
+                        System.out.println(temp.get(i).getOwner().getName() + " fue el tercero en apostar por " + winner.identifier + " y ha ganado 3 monedas");
+                        playerGuessedRight++;
+                        break;
+                    case 3:
+                        temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() + 2);
+                        System.out.println(temp.get(i).getOwner().getName() + " fue el cuarto en apostar por " + winner.identifier + " y ha ganado 2 monedas");
+                        playerGuessedRight++;
+                        break;
+                    default:
+                        temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() + 1);
+                        System.out.println(temp.get(i).getOwner().getName() + " ha apostado por " + winner.identifier + " y ha ganado 1 moneda");
+                        playerGuessedRight++;
+                        break;
+                }
+            } else {
+                temp.get(i).getOwner().setMoney(temp.get(i).getOwner().getMoney() - 1);
+                System.out.println(temp.get(i).getOwner().getName() + " ha apostado erroneamente por " + temp.get(i).camel + " y ha perdido 1 moneda");
+            }
+        }
+    }
+
+    private void evaluateGame(){
+        System.out.println("\n----Fin del juego----");
+        displayBoard();
+        placeCamel(board);
+
+        System.out.println("\n----Pila de perdedores----");
+        evaluateStack(loserStack);
+
+        System.out.println("\n----Pila de ganadores----");
+        evaluateStack(winnerStack);
+
+        System.out.println("\n----Dinero total----");
+        for(int i = 0; i < players.size(); i++){
+            players.get(i).grade();
+            System.out.println((i + 1) + ".-" + "El jugador " + players.get(i).getName() + " tiene " + players.get(i).getMoney() + " monedas");
+        }
+
+        System.out.println("\n----Ganador----");
+        evaluatePlayers();
     }
 
     private void prepareNextRound(){
@@ -290,16 +382,17 @@ public class CamelUp {
             case 2:
                 if(!players.get(currentPlayer).camelCardList.isEmpty()){
                     while (true) {
-                        System.out.println("Elige una carta de camello para apostar (1-5)");
+                        System.out.println("Elige una carta de camello para apostar (1-" + players.get(currentPlayer).camelCardList.size() + ")");
                         System.out.println(players.get(currentPlayer).camelCardList);
                         actionInput = scanner.nextInt() - 1;
-                        if (actionInput > 4 || actionInput < 0){
+                        if (actionInput > players.get(currentPlayer).camelCardList.size() || actionInput < 0){
                             System.out.println("Numero invalido, intenta de nuevo");
                         } else {
                             break;
                         }       
                     }
                     players.get(currentPlayer).bet(winnerStack, actionInput);
+                    System.out.println("Has apostado que " + camels.get(actionInput).identifier + "ganara la partida");
                     history.push("El jugador " + players.get(currentPlayer).getName() + " aposto que " + camels.get(actionInput).identifier + " ganara la partida");
                     isTurnOver = true;
                     break;
@@ -312,16 +405,17 @@ public class CamelUp {
             case 3:
                 if(!players.get(currentPlayer).camelCardList.isEmpty()){
                     while (true) {
-                        System.out.println("Elige una carta de camello para apostar (1-5)");
+                        System.out.println("Elige una carta de camello para apostar (1-" + players.get(currentPlayer).camelCardList.size() + ")");
                         System.out.println(players.get(currentPlayer).camelCardList);
                         actionInput = scanner.nextInt() - 1;
-                        if (actionInput > 4 || actionInput < 0){
+                        if (actionInput > players.get(currentPlayer).camelCardList.size() || actionInput < 0){
                             System.out.println("Numero invalido, intenta de nuevo");
                         } else {
                             break;
                         }       
                     }
                     players.get(currentPlayer).bet(loserStack, actionInput);
+                    System.out.println("Has apostado que " + camels.get(actionInput).identifier + "perdera la partida");
                     history.push("El jugador " + players.get(currentPlayer).getName() + " aposto que " + camels.get(actionInput).identifier + " perdera la partida");
                     isTurnOver = true;
                     break;
@@ -420,6 +514,6 @@ public class CamelUp {
         while(isGameOver == false){
             round(scanner);
         }   
-        evaluateRound();
+        evaluateGame();
     }
 }
