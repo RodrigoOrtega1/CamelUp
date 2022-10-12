@@ -11,3 +11,7 @@ Estructura del proyecto:
 
 Como ejecutarlo:  
 
+    En la terminal escribir  
+    * javac Main.java
+    * java Main
+
