@@ -326,6 +326,7 @@ public class CamelUp {
         }
 
         for(int i = 0; i < players.size(); i++){
+            players.get(i).betCardList.clear();
             players.get(i).fillModifier();
         }
 
