@@ -182,7 +182,7 @@ public class CamelUp {
      * @param num numero de jugadores
      * @param scanner scanner para recibir datos de los jugadores
      */
-    private void setUpRound(int num, Scanner scanner){
+    public void setUpRound(int num, Scanner scanner){
 
         System.out.println("Preparando el juego...");
 
@@ -416,28 +416,10 @@ public class CamelUp {
         }
     }
 
-    private void game(Scanner scanner){
+    public void game(Scanner scanner){
         while(isGameOver == false){
             round(scanner);
         }   
         evaluateRound();
-    }
-
-    public static void main(String[] args){
-        Scanner scanner = new Scanner(System.in);
-        CamelUp round = new CamelUp();
-        int playerNum;
-        while (true) {
-            System.out.println("Inserte el numero de jugadores:");
-            playerNum = scanner.nextInt();
-            if (playerNum > 6 || playerNum < 4){
-                System.out.println("Solo pueden jugar de 4-6 jugadores, inserta un numero valido");
-            } else {
-                break;
-            }       
-        }
-        scanner.nextLine(); // para que scanner no se salte la siguiente llamada a este
-        round.setUpRound(4, scanner); 
-        round.game(scanner);
     }
 }
