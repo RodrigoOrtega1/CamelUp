@@ -195,15 +195,18 @@ public class Player {
         setMoney(this.money + 1);
     }
 
-    public void grade(){
+    public void grade(Stack<String> history){
         for(int i = 0; i < betCardList.size(); i++){
-            System.out.println("El camello esta en: " + betCardList.get(i).camelPlace);
             if(betCardList.get(i).camelPlace == 1){
                 setMoney(getMoney() + betCardList.get(i).value);
+                history.push(getName() + " ha apostado por " + betCardList.get(i).camelName + " y ha ganado " + betCardList.get(i).value + " monedas");
             } else if (betCardList.get(i).camelPlace == 2){
                 setMoney(getMoney() + 1);
+                history.push(getName() + " ha apostado por " + betCardList.get(i).camelName + " y ha ganado 2 monedas");
             } else {
                 setMoney(getMoney() - 1);
+                history.push(getName() + " ha apostado erroneamente por " + betCardList.get(i).camelName + " y ha perdido 1 moneda");
+
             }
         }
     }
