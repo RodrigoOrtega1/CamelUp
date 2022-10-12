@@ -6,22 +6,66 @@ import java.util.Random;
  * Clase que modela una partida de CamelUp
  * @author Rodrigo Ortega 318036104
  * @version 1.0 Oct 6 2022
- * @since ED 2023-1
+ * @since ED 2023-1 
  */
 
 public class CamelUp {
+    
+    /**
+     * Lista de jugadores en la partida
+     */
     private SimpleLinkedList<Player> players = new SimpleLinkedList<>();
+
+    /**
+     * Lista de camellos en la partida
+     */
     private SimpleLinkedList<Camel> camels = new SimpleLinkedList<>();
+
+    /**
+     * Lista de camellos que se han movido en la partida
+     */
     private SimpleLinkedList<Camel> movedCamels = new SimpleLinkedList<>();
+
+    /**
+     * Lista de camellos que no se altera en la partida
+     */
     private SimpleLinkedList<Camel> camelsAlwaysFull = new SimpleLinkedList<>();
+
+    /**
+     * Pila de cartas de camello ganadoras
+     */
     private Stack<Player.CamelCard> winnerStack = new Stack<>();
+
+    /**
+     * Pila de cartas de camello perdedoras
+     */
     private Stack<Player.CamelCard> loserStack = new Stack<>();
+
+    /**
+     * Historial de la ronda
+     */
     private Stack<String> history = new Stack<>();
+
+    /**
+     * Tablero del juego
+     */
     private Tile[] board = new Tile[16];
+
+    /**
+     * Indica si ha terminado el turno de un jugador
+     */
     private boolean isTurnOver = false;
+
+    /**
+     * Indica si ha terminado el juego
+     */
     private boolean isGameOver = false;
     
-    private void placeCamel(Tile[] board){
+    /**
+     * Posiciona a los camellos de acuerdo a su lugar en el tablero
+     * @param board el tablero
+     */
+    private void rankCamel(Tile[] board){
         SimpleLinkedList<Camel> camelPos = new SimpleLinkedList<>();
         for(int i = 0; i < board.length; i++){
             for(int j = 0; j < board[i].camelStack.size(); j++){
@@ -109,6 +153,10 @@ public class CamelUp {
         }
     }
 
+
+    /**
+     * Muestra el tablero en la terminal
+     */
     private void displayBoard(){
         System.out.println("Tablero:");
         for(int i = 0; i < board.length; i++){
@@ -129,6 +177,11 @@ public class CamelUp {
         }
     }
 
+
+    /**
+     * Voltea el historial y lo muestra en la terminal
+     * @param history el historial
+     */
     private void reverseHistory(Stack<String> history){
         SimpleLinkedList<String> temp = new SimpleLinkedList<>();
         while(!history.isEmpty()){
@@ -140,7 +193,10 @@ public class CamelUp {
         }
     }
 
-    private void evaluatePlayers(){
+    /**
+     * Indica el ganador del juego
+     */
+    private void getWinner(){
         SimpleLinkedList<Player> winners = new SimpleLinkedList<>();
         int mostMoney = 0;
         for (int i = 0; i < players.size(); i++){
@@ -162,14 +218,18 @@ public class CamelUp {
         }
     }
 
+
+    /**
+     * Muestra el estatus de la ronda
+     */
     private void evaluateRound(){
         System.out.println("\n----Final de la ronda----");
         displayBoard();
-        placeCamel(board);
+        rankCamel(board);
 
         System.out.println("\n----Dinero de la ronda----");
         for(int i = 0; i < players.size(); i++){
-            players.get(i).grade();
+            players.get(i).grade(history);
             System.out.println((i + 1) + ".-" + "El jugador " + players.get(i).getName() + " tiene " + players.get(i).getMoney() + " monedas");
         }
         
@@ -177,6 +237,11 @@ public class CamelUp {
         reverseHistory(history);
     }
 
+
+    /**
+     * Asigna dinero a los jugadores de acuerdo con la posicion de sus cartas en la pila
+     * @param stack la pila a evaluar
+     */
     private void evaluateStack(Stack<Player.CamelCard> stack){
         SimpleLinkedList<Player.CamelCard> temp = new SimpleLinkedList<>();
         while(!stack.isEmpty()){
@@ -226,10 +291,14 @@ public class CamelUp {
         }
     }
 
+
+    /**
+     * Evalua los parametros finales del juego
+     */
     private void evaluateGame(){
         System.out.println("\n----Fin del juego----");
         displayBoard();
-        placeCamel(board);
+        rankCamel(board);
 
         System.out.println("\n----Pila de perdedores----");
         evaluateStack(loserStack);
@@ -239,14 +308,18 @@ public class CamelUp {
 
         System.out.println("\n----Dinero total----");
         for(int i = 0; i < players.size(); i++){
-            players.get(i).grade();
+            players.get(i).grade(history);
             System.out.println((i + 1) + ".-" + "El jugador " + players.get(i).getName() + " tiene " + players.get(i).getMoney() + " monedas");
         }
 
         System.out.println("\n----Ganador----");
-        evaluatePlayers();
+        getWinner();
     }
 
+
+    /**
+     * Prepara la proxima ronda
+     */
     private void prepareNextRound(){
         for(int i = 0; i < board.length; i++){
             board[i].modifier.clear();
@@ -340,6 +413,12 @@ public class CamelUp {
         System.out.println("Listo");
     }
 
+
+    /**
+     * Representa un turno del jugador
+     * @param currentPlayer el jugador al que le pertenece el turno
+     * @param scanner toma los inputs del jugador
+     */
     private void turn(int currentPlayer, Scanner scanner){
         
         System.out.println("Turno de: " + players.get(currentPlayer).getName());
@@ -482,7 +561,7 @@ public class CamelUp {
                 camels.remove(randomInt);
                 System.out.println("Has movido a: " +  movedCamels.get(movedCamels.size() - 1).identifier);
                 System.out.println("Se han movido los siguientes camellos esta ronda: " + movedCamels);
-                history.push("El jugador " + players.get(currentPlayer).getName() + " movio a " + movedCamels.get(movedCamels.size() - 1).identifier);
+                history.push("El jugador " + players.get(currentPlayer).getName() + " movio a " + movedCamels.get(movedCamels.size() - 1).identifier + " y ha ganado 1 moneda");
                 isTurnOver = true;
                 break;
                 
@@ -492,6 +571,11 @@ public class CamelUp {
         } while(isTurnOver != true);
     }
 
+
+    /**
+     * Representa una ronda
+     * @param scanner toma los inputs de los jugadores
+     */
     private void round(Scanner scanner){
         int currentPlayer = 0;
         while (currentPlayer < players.size()){
@@ -510,6 +594,10 @@ public class CamelUp {
         }
     }
 
+    /**
+     * Representa una partida
+     * @param scanner toma los inputs de los jugadores
+     */
     public void game(Scanner scanner){
         while(isGameOver == false){
             round(scanner);
