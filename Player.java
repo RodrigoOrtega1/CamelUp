@@ -1,5 +1,4 @@
-import Extras.SimpleLinkedList;
-import Extras.Stack;
+import Extras.*;
 
 /**
  * Clase que modela un jugador de CamelUp
