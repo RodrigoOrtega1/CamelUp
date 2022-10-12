@@ -183,18 +183,9 @@ public class Player {
      * @param i casilla en el tablero
      */
     public void placeMod(Tile[] board, boolean modifier, int i){
-        boolean canPlace = false;
-        while(canPlace == false){
-            if(!board[i].hasModifier() && !board[i - 1].hasModifier() && !board[i + 1].hasModifier() && board[i].camelStack.isEmpty()){
-                modifierL.get(0).setValue(modifier);
-                board[i].modifier.add(0, modifierL.get(0));
-                modifierL.clear();
-                canPlace = true;
-            } else {
-                System.out.println("Casilla invalida, intenta de nuevo");
-                break;
-            }
-        }
+        modifierL.get(0).setValue(modifier);
+        board[i].modifier.add(0, modifierL.get(0));
+        modifierL.clear();
     }
     
     /**
