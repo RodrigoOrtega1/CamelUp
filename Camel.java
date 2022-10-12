@@ -61,7 +61,7 @@ public class Camel {
     public class betCard{
         int value;
         int camelPlace = place;
-        String camelName = identifier;
+        String camelName = identifier; // cambiarlo con Camel owner
 
         public betCard(int value){
             this.value = value;
@@ -107,6 +107,7 @@ public class Camel {
      * Mueve al camello
      * @param camel el camello a mover
      * @param board el tablero en el que se mueve el camello
+     * @param history el historial de la partida
      */
     public void move(Camel camel, Tile[] board, Stack<String> history){
         int origin = camel.position;
@@ -115,25 +116,24 @@ public class Camel {
             destination = 15;
         }
         int len = board[destination].camelStack.size();
-        
-        
-        if (board[destination].hasModifier()){
+    
+        if (board[destination].hasModifier()){ //si la casilla tiene modificador
             Player owner = board[destination].modifier.get(0).getOwner();
-            owner.setMoney(owner.getMoney() + 1); //give player a coin
-            history.push(camel.identifier + " cayo en el modificador de " + owner.getName() + " el jugador y recibe +1 moneda");
+            owner.setMoney(owner.getMoney() + 1);
+            history.push(camel.identifier + " cayo en el modificador de " + owner.getName() + ", el jugador recibe 1 moneda");
             if(board[destination].getModifier() == true) {
                 destination = destination + 1;
             }
         }
 
-        if (board[origin].camelStack.size() > 1){
+        if (board[origin].camelStack.size() > 1){ // si hay mas de un camello en la casilla
             SimpleLinkedList<Camel> temp = new SimpleLinkedList<>();
             for(int i = board[origin].camelStack.indexOf(camel); i < board[origin].camelStack.size(); i++){
                 temp.add(temp.size(), board[origin].camelStack.get(i));
             }
-            if(board[destination].hasModifier()){
+            if(board[destination].hasModifier()){ // si tiene un modiificador hacia atras
                 if(board[destination].getModifier() == false){
-                    SimpleLinkedList<Camel> temp2 = new SimpleLinkedList<>(); // camellos en la casilla anterior
+                    SimpleLinkedList<Camel> temp2 = new SimpleLinkedList<>();
                     destination = destination - 1;
                     for(int i = 0; i < board[destination].camelStack.size(); i++){
                         temp2.add(temp2.size(), board[destination].camelStack.get(i));
@@ -150,7 +150,7 @@ public class Camel {
                         board[destination].camelStack.add(board[destination].camelStack.size(), temp2.get(i));
                     }
                 }
-            } else {
+            } else { // si no tiene un modificador o tiene un modificador hacia adelante
                 for (int i = 0; i < temp.size(); i++){
                     board[origin].camelStack.delete(temp.get(i));
                     board[destination].camelStack.add(board[destination].camelStack.size(), temp.get(i));
@@ -159,7 +159,7 @@ public class Camel {
             for(int j = 0; j < board[destination].camelStack.size(); j++){
                 board[destination].camelStack.get(j).setPosition(destination);
             }
-        } else {
+        } else { // si tiene un modificador hacia atras y esta solo en la casilla
             if(board[destination].hasModifier()){
                 if(board[destination].getModifier() == false){
                     destination = destination - 1;
@@ -167,7 +167,7 @@ public class Camel {
                     board[destination].camelStack.add(0, camel);
                     camel.setPosition(destination);
                 }
-            } else {
+            } else { // si no tiene un modificador o tiene un modificador hacia adelante y esta solo en la casilla
                 board[origin].camelStack.delete(camel);
                 board[destination].camelStack.add(len, camel);
                 camel.setPosition(destination);
