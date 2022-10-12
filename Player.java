@@ -49,7 +49,7 @@ public class Player {
         /**
          * Nombre del dueno de la carta
          */
-        private String owner = getName();
+        private Player owner;
         
         /**
          * Nombre del camello de la carta
@@ -61,16 +61,16 @@ public class Player {
          * Constructor de la calse CamelCard
          * @param camel nombre del camello
          */
-        public CamelCard(String camel){
-            owner = getOwner();
+        public CamelCard(String camel, Player owner){
             this.camel = camel;
+            this.owner = owner;
         }
 
         /**
          * Metodo que regresa el nombre del dueno de la carta
          * @return nombre del dueno de la carta
          */
-        public String getOwner(){
+        public Player getOwner(){
             return this.owner;
         }
 
@@ -137,11 +137,11 @@ public class Player {
      * Genera cartas de camello y las coloca en una lista 
      */
     public void fillCamelCardList(){
-        CamelCard camelCard1 = new CamelCard("Red");
-        CamelCard camelCard2 = new CamelCard("Green");
-        CamelCard camelCard3 = new CamelCard("Yellow");
-        CamelCard camelCard4 = new CamelCard("Purple");
-        CamelCard camelCard5 = new CamelCard("Blue");
+        CamelCard camelCard1 = new CamelCard("Red", this);
+        CamelCard camelCard2 = new CamelCard("Green", this);
+        CamelCard camelCard3 = new CamelCard("Yellow", this);
+        CamelCard camelCard4 = new CamelCard("Purple", this);
+        CamelCard camelCard5 = new CamelCard("Blue", this);
         camelCardList.add(0, camelCard1);
         camelCardList.add(0, camelCard2);
         camelCardList.add(0, camelCard3);
